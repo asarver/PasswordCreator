@@ -9,7 +9,6 @@ class Password:
     def checkInput(self, userInput):
         options = userInput.split(" ")
         for option in options:
-            print option
             if option != "#" and option != "s" and option != "A" and option != "a":
                 try:
                     if option <= "0" or option >= "50":
@@ -30,13 +29,18 @@ class Password:
         except IndexError:
             pass
         
-        print "Good bye."
+        print "Goodbye."
         sys.exit(0)
 
     
     def createPassword(self):
         print "Creating your password..."
         self.createSequence()
+        i = 0
+        while i < self.length:
+            self.password += chr(random.choice(self.sequence))
+            i += 1
+        print "\nYour password is:", self.password
 
     def createSequence(self):
         for option in self.options:
@@ -60,13 +64,26 @@ class Password:
                     self.sequence.append(i)
             else:
                 self.length = int(option)
-        print self.sequence
     
     def __init__(self):
        self.sequence = []
        self.length = 0
        self.options = []
+       self.password = ""
        self.startUp()
+
+    def createAnother(self):
+        print "\nWould you like to create another password (Y or N)?"
+        try:
+            input = raw_input()[0]
+            if input == "y" or input == "Y":
+                self.__init__()
+                return
+        except IndexError:
+            pass
+      
+        print "Goodbye."
+        sys.exit(0)
 
     def startUp(self):
         print "Welcome to Password Generator V 2.0" 
@@ -79,6 +96,7 @@ class Password:
         print "\t'#' for numbers"
         self.checkInput(raw_input())
         self.createPassword()
+        self.createAnother()
 
 if __name__ == "__main__":
     myPassword = Password()
