@@ -1,41 +1,74 @@
 #!/usr/bin/python
 
+import sys
+import random
+
 class Password:
     """A Class to make random passwords any length with any characters"""
-
-    def makePassword():
-        pass
-
-    def setOptions(self, options):
-        self.options = options;
-
-    def getOptions(self):
-        return self.options
 
     def checkInput(self, userInput):
         options = userInput.split(" ")
         for option in options:
-            if int(option) <= 0 or int(option) >= 50:
-                if option != '#' or option != 's' or option != 'A' or option != 'a':
+            print option
+            if option != "#" and option != "s" and option != "A" and option != "a":
+                try:
+                    if option <= "0" or option >= "50":
+                        self.tryAgain()
+                        return
+                except ValueError:
                     self.tryAgain()
-                    break
-        self.setOptions(userInput)
+                    return 
+        self.options = options
 
     def tryAgain(self):
         print "Sorry, your input was invalid. Try again (Y or N)?"
         try:
             input = raw_input()[0]
-            if input == 'y' or input == 'Y':
+            if input == "y" or input == "Y":
                 self.__init__()
                 return
         except IndexError:
             pass
         
         print "Good bye."
-        return
+        sys.exit(0)
 
+    
+    def createPassword(self):
+        print "Creating your password..."
+        self.createSequence()
+
+    def createSequence(self):
+        for option in self.options:
+            if option == "#":
+                for i in range(48, 58):
+                    self.sequence.append(i)
+            elif option == "s":
+                for i in range(33, 48):
+                    self.sequence.append(i)
+                for i in range(58, 65):
+                    self.sequence.append(i)
+                for i in range(91, 97):
+                    self.sequence.append(i)
+                self.sequence.append(123)
+                self.sequence.append(125)
+            elif option == "A":
+                for i in range(65, 91):
+                    self.sequence.append(i)
+            elif option == "a":
+                for i in range(97, 123):
+                    self.sequence.append(i)
+            else:
+                self.length = int(option)
+        print self.sequence
+    
     def __init__(self):
-        self.options_avail = ['#', 's', 'A', 'a']
+       self.sequence = []
+       self.length = 0
+       self.options = []
+       self.startUp()
+
+    def startUp(self):
         print "Welcome to Password Generator V 2.0" 
         print "\nHere are options for creating your password:"
         print "\tEnter, seperated by a space, your selections:"
@@ -45,7 +78,7 @@ class Password:
         print "\t'a' for lowercase letters"
         print "\t'#' for numbers"
         self.checkInput(raw_input())
-
+        self.createPassword()
 
 if __name__ == "__main__":
     myPassword = Password()
