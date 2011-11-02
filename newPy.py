@@ -1,39 +1,41 @@
 #!/usr/bin/python
 
-import sys
 import random
 import string
 
 class Password:
-    def __init__(self, input):
-        self.sequence = ''
+    OPTIONS = {'#': string.digits, 'a': string.lowercase,
+            'A': string.uppercase, 's': string.punctuation}
+
+    def __init__(self, userInput):
         self.length = 0
         self.options = []
-        self.password = ""
+        self.password = ''
+        self.sequence = ''
 
-        self.checkOptions(input)
+        self.checkOptions(userInput)
         self.createSequence()
 
-    def checkOptions(self, input):
-        length = ''
-        num = ''
-        for letter in input:
-            if letter not in ['#', 'a', 'A', 's']:
-                if 48 <= ord(letter) <= 57:
-                    num += letter
-            else:
+    def checkOptions(self, userInput):
+        for letter in set(userInput):
+            if letter in Password.OPTIONS:
                 self.options.append(letter)
-        if int(num) <= 0 or int(num) > 50:
-            self.enterLength()
-        else:
+
+        numFilter = lambda x: x in string.digits
+        num = filter(numFilter, userInput)
+
+        if num and 0 < int(num) <= 50:
             self.length = int(num)
+        else:
+            self.enterLength()
 
     def enterLength(self):
-        print "Enter in a length greater than zero but less than 50."
+        print 'Enter in a length greater than zero but less than 50.'
         num = raw_input()
+
         try:
             num = int(num)
-            if num > 0 and num <= 50:
+            if 0 < num <= 50:
                 self.length = num
             else:
                 self.enterLength()
@@ -42,18 +44,13 @@ class Password:
 
     def createSequence(self):
         for option in self.options:
-            if option == '#':
-                self.sequence += string.digits
-            elif option == 's':
-                self.sequence += string.punctuation
-            elif option == 'A':
-                self.sequence += string.uppercase
-            elif option == 'a':
-                self.sequence += string.lowercase
+            self.sequence += Password.OPTIONS[option]
 
     def createPassword(self):
-        for i in range(self.length):
-            self.password += random.choice(self.sequence)
+        if self.sequence:
+            for i in range(self.length):
+                self.password += random.choice(self.sequence)
+
         return self.password
 
 if __name__ == "__main__":
